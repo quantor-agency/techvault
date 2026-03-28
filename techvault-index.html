@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechVault Solutions | Enterprise IT Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Inter:wght@400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #030712;
+            --bg-card: rgba(255,255,255,0.03);
+            --card-border: rgba(99,102,241,0.2);
+            --indigo: #6366f1;
+            --electric-blue: #3b82f6;
+            --violet: #8b5cf6;
+            --off-white: #f8fafc;
+            --muted: rgba(248,250,252,0.5);
+            --glow-indigo: 0 0 30px rgba(99,102,241,0.4);
+            --glow-blue: 0 0 30px rgba(59,130,246,0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--off-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .mono {
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.6));
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--electric-blue);
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--off-white);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--indigo), var(--violet));
+            border-radius: 2px;
+        }
+
+        .nav-cta {
+            background: var(--indigo);
+            color: var(--off-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-indigo);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--off-white);
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: rgba(3, 7, 18, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 1rem 0;
+            color: var(--muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--card-border);
+            transition: color 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--off-white);
+        }
+
+        .mobile-menu .nav-cta {
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .hero-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--electric-blue);
+            letter-spacing: 3px;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.75rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--electric-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary {
+            background: var(--indigo);
+            color: var(--off-white);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-indigo);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 50px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--electric-blue);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid var(--electric-blue);
+            transition: all 0.3s ease;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(59, 130, 246, 0.1);
+            box-shadow: var(--glow-blue);
+            transform: translateY(-3px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--off-white);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-pill span {
+            color: var(--electric-blue);
+            font-weight: 600;
+        }
+
+        /* Services */
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--violet);
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--indigo), var(--violet));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-card:hover {
+            border-color: var(--indigo);
+            box-shadow: var(--glow-indigo);
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .service-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .service-desc {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .services-cta {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        /* How We Work */
+        .process-section {
+            background: linear-gradient(180deg, transparent, rgba(99, 102, 241, 0.03), transparent);
+        }
+
+        .process-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .process-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: var(--card-border);
+            z-index: 0;
+        }
+
+        .process-line-fill {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            height: 2px;
+            width: 0;
+            background: linear-gradient(90deg, var(--indigo), var(--violet));
+            z-index: 1;
+            transition: width 1.5s ease;
+        }
+
+        .process-line-fill.animated {
+            width: 80%;
+        }
+
+        .process-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+            padding: 0 1rem;
+        }
+
+        .step-number {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--indigo);
+            background: var(--bg-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .process-step:hover .step-number {
+            background: var(--indigo);
+            color: var(--off-white);
+            box-shadow: var(--glow-indigo);
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-desc {
+            color: var(--muted);
+            font-size: 0.875rem;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        /* Stats */
+        .stats-section {
+            background: linear-gradient(180deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--indigo);
+            box-shadow: var(--glow-indigo);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            border-color: var(--indigo);
+            transform: translateY(-5px);
+        }
+
+        .testimonial-company {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--indigo);
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-text {
+            color: var(--off-white);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .author-info h4 {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .author-info p {
+            color: var(--muted);
+            font-size: 0.875rem;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            background: var(--off-white);
+            color: var(--indigo);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(3, 7, 18, 0.95);
+            border-top: 1px solid var(--card-border);
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-logo-icon {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+        }
+
+        .footer-logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--electric-blue);
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-nav a:hover {
+            color: var(--off-white);
+        }
+
+        .footer-bottom {
+            text-align: center;
+        }
+
+        .footer-credit {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--indigo);
+        }
+
+        .footer-credit a {
+            color: var(--electric-blue);
+            text-decoration: none;
+        }
+
+        .footer-credit a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .process-line,
+            .process-line-fill {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-top {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-ctas {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary,
+            .btn-ghost {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a href="techvault-index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 2L4 10V18C4 27.9 11.1 37.1 20 40C28.9 37.1 36 27.9 36 18V10L20 2Z" stroke="url(#logoGrad)" stroke-width="2" fill="none"/>
+                    <path d="M20 8L10 13V18C10 25.2 14.2 31.8 20 34C25.8 31.8 30 25.2 30 18V13L20 8Z" fill="url(#logoGrad)" opacity="0.3"/>
+                    <path d="M16 20L19 23L25 17" stroke="#f8fafc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="logoGrad" x1="4" y1="2" x2="36" y2="40">
+                            <stop stop-color="#3b82f6"/>
+                            <stop offset="1" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">TECHVAULT</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="techvault-index.html" class="active">Home</a></li>
+                <li><a href="techvault-services.html">Services</a></li>
+                <li><a href="techvault-portfolio.html">Portfolio</a></li>
+                <li><a href="techvault-support.html">Support</a></li>
+                <li><a href="techvault-contact.html">Contact</a></li>
+            </ul>
+            <a href="techvault-contact.html" class="nav-cta">Get a Quote</a>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="techvault-index.html">Home</a>
+        <a href="techvault-services.html">Services</a>
+        <a href="techvault-portfolio.html">Portfolio</a>
+        <a href="techvault-support.html">Support</a>
+        <a href="techvault-contact.html">Contact</a>
+        <a href="techvault-contact.html" class="nav-cta">Get a Quote</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-content">
+            <p class="hero-label">ENTERPRISE IT SOLUTIONS · EST. 2015</p>
+            <h1 class="hero-title">Technology That Scales With Your Business.</h1>
+            <p class="hero-subtitle">From infrastructure to AI integration — we build, secure, and scale the tech stack your business needs.</p>
+            <div class="hero-ctas">
+                <a href="techvault-contact.html" class="btn-primary">
+                    Get a Quote
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="techvault-services.html" class="btn-ghost">View Services</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-pill"><span>200+</span> Enterprise Clients</div>
+                <div class="stat-pill"><span>99.9%</span> Uptime Delivered</div>
+                <div class="stat-pill"><span>24/7</span> Support Coverage</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section" id="services">
+        <div class="section-header">
+            <p class="section-label">// OUR EXPERTISE</p>
+            <h2 class="section-title">Enterprise-Grade Services</h2>
+            <p class="section-subtitle">Comprehensive IT solutions designed for modern businesses that demand reliability, security, and innovation.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card" data-tilt>
+                <div class="service-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f8fafc" stroke-width="2">
+                        <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">Cloud Infrastructure</h3>
+                <p class="service-desc">Scalable cloud architecture on AWS, Azure, and GCP. Migration, optimization, and 24/7 management for enterprise workloads.</p>
+            </div>
+            <div class="service-card" data-tilt>
+                <div class="service-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f8fafc" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">Cybersecurity</h3>
+                <p class="service-desc">End-to-end security solutions including threat detection, penetration testing, compliance, and incident response.</p>
+            </div>
+            <div class="service-card" data-tilt>
+                <div class="service-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f8fafc" stroke-width="2">
+                        <polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">Software Development</h3>
+                <p class="service-desc">Custom enterprise applications, API development, and legacy modernization with agile methodologies.</p>
+            </div>
+            <div class="service-card" data-tilt>
+                <div class="service-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f8fafc" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">IT Consulting</h3>
+                <p class="service-desc">Strategic technology roadmaps, digital transformation guidance, and CIO-level advisory services.</p>
+            </div>
+            <div class="service-card" data-tilt>
+                <div class="service-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f8fafc" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">Data Analytics</h3>
+                <p class="service-desc">Business intelligence, data warehousing, and real-time analytics dashboards that drive informed decisions.</p>
+            </div>
+            <div class="service-card" data-tilt>
+                <div class="service-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f8fafc" stroke-width="2">
+                        <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="8" cy="14" r="1"/><circle cx="16" cy="14" r="1"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">AI Integration</h3>
+                <p class="service-desc">Machine learning models, NLP solutions, and intelligent automation that transform business operations.</p>
+            </div>
+        </div>
+        <div class="services-cta">
+            <a href="techvault-services.html" class="btn-ghost">Explore All Services</a>
+        </div>
+    </section>
+
+    <!-- How We Work -->
+    <section class="section process-section" id="process">
+        <div class="section-header">
+            <p class="section-label">// OUR METHODOLOGY</p>
+            <h2 class="section-title">How We Work</h2>
+            <p class="section-subtitle">A proven four-phase approach that ensures successful outcomes every time.</p>
+        </div>
+        <div class="process-container">
+            <div class="process-line"></div>
+            <div class="process-line-fill" id="processLine"></div>
+            <div class="process-step">
+                <span class="step-number">01</span>
+                <h3 class="step-title">Discovery & Audit</h3>
+                <p class="step-desc">Deep dive into your current infrastructure, identifying gaps and opportunities.</p>
+            </div>
+            <div class="process-step">
+                <span class="step-number">02</span>
+                <h3 class="step-title">Strategy & Architecture</h3>
+                <p class="step-desc">Design scalable solutions aligned with your business objectives and growth plans.</p>
+            </div>
+            <div class="process-step">
+                <span class="step-number">03</span>
+                <h3 class="step-title">Build & Deploy</h3>
+                <p class="step-desc">Agile implementation with continuous integration and comprehensive testing.</p>
+            </div>
+            <div class="process-step">
+                <span class="step-number">04</span>
+                <h3 class="step-title">Monitor & Optimize</h3>
+                <p class="step-desc">Proactive monitoring, performance tuning, and continuous improvement cycles.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="section stats-section" id="stats">
+        <div class="section-header">
+            <p class="section-label">// BY THE NUMBERS</p>
+            <h2 class="section-title">Trusted by Industry Leaders</h2>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" data-target="200">0</div>
+                <div class="stat-label">Enterprise Clients</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="500">0</div>
+                <div class="stat-label">Projects Delivered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="99.9" data-decimal="true">0</div>
+                <div class="stat-label">Uptime Percentage</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="24">0</div>
+                <div class="stat-label">Hour Support</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section" id="testimonials">
+        <div class="section-header">
+            <p class="section-label">// CLIENT SUCCESS</p>
+            <h2 class="section-title">What Our Clients Say</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-company">NEXGEN FINANCIAL</p>
+                <p class="testimonial-text">"TechVault transformed our entire infrastructure in just six months. Their cloud migration strategy saved us $2M annually while improving our system reliability to 99.99%."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MK</div>
+                    <div class="author-info">
+                        <h4>Michael Kessler</h4>
+                        <p>CTO</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-company">MERIDIAN HEALTHCARE</p>
+                <p class="testimonial-text">"The cybersecurity team at TechVault identified vulnerabilities we didn't even know existed. Their proactive approach has been invaluable for our HIPAA compliance."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SR</div>
+                    <div class="author-info">
+                        <h4>Sarah Rodriguez</h4>
+                        <p>CIO</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-company">ATLAS MANUFACTURING</p>
+                <p class="testimonial-text">"From IoT integration to predictive analytics, TechVault's AI solutions have revolutionized our production line efficiency by 40%."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">JW</div>
+                    <div class="author-info">
+                        <h4>James Wang</h4>
+                        <p>VP of Operations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner">
+        <div class="cta-content">
+            <h2 class="cta-title">Your infrastructure should work for you, not against you.</h2>
+            <a href="techvault-contact.html" class="cta-btn">Schedule a Tech Audit</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <svg class="footer-logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2L4 10V18C4 27.9 11.1 37.1 20 40C28.9 37.1 36 27.9 36 18V10L20 2Z" stroke="url(#footerLogoGrad)" stroke-width="2" fill="none"/>
+                        <path d="M20 8L10 13V18C10 25.2 14.2 31.8 20 34C25.8 31.8 30 25.2 30 18V13L20 8Z" fill="url(#footerLogoGrad)" opacity="0.3"/>
+                        <defs>
+                            <linearGradient id="footerLogoGrad" x1="4" y1="2" x2="36" y2="40">
+                                <stop stop-color="#3b82f6"/>
+                                <stop offset="1" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="footer-logo-text">TECHVAULT</span>
+                </div>
+                <div class="footer-nav">
+                    <a href="techvault-index.html">Home</a>
+                    <a href="techvault-services.html">Services</a>
+                    <a href="techvault-portfolio.html">Portfolio</a>
+                    <a href="techvault-support.html">Support</a>
+                    <a href="techvault-contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-credit">Demo site built by <a href="https://quantor-agency.github.io/" target="_blank">QUANTOR</a> — quantor.agency</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Three.js Hero Background
+        (function() {
+            const canvas = document.getElementById('hero-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            
+            // Particles for network nodes
+            const particleCount = 300;
+            const particleGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            
+            const indigo = new THREE.Color(0x6366f1);
+            const electricBlue = new THREE.Color(0x3b82f6);
+            const violet = new THREE.Color(0x8b5cf6);
+            
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+                
+                const color = [indigo, electricBlue, violet][Math.floor(Math.random() * 3)];
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.15,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+            
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+            
+            // Connection lines
+            const lineGeometry = new THREE.BufferGeometry();
+            const linePositions = [];
+            const lineColors = [];
+            const connectionDistance = 8;
+            
+            for (let i = 0; i < particleCount; i++) {
+                for (let j = i + 1; j < particleCount; j++) {
+                    const dx = positions[i * 3] - positions[j * 3];
+                    const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
+                    const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
+                    const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    
+                    if (dist < connectionDistance) {
+                        linePositions.push(
+                            positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
+                            positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2]
+                        );
+                        const opacity = 1 - dist / connectionDistance;
+                        lineColors.push(
+                            colors[i * 3] * opacity, colors[i * 3 + 1] * opacity, colors[i * 3 + 2] * opacity,
+                            colors[j * 3] * opacity, colors[j * 3 + 1] * opacity, colors[j * 3 + 2] * opacity
+                        );
+                    }
+                }
+            }
+            
+            lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            lineGeometry.setAttribute('color', new THREE.Float32BufferAttribute(lineColors, 3));
+            
+            const lineMaterial = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.3
+            });
+            
+            const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(lines);
+            
+            // Streaming particles (matrix effect)
+            const streamCount = 100;
+            const streamGeometry = new THREE.BufferGeometry();
+            const streamPositions = new Float32Array(streamCount * 3);
+            const streamVelocities = [];
+            
+            for (let i = 0; i < streamCount; i++) {
+                streamPositions[i * 3] = (Math.random() - 0.5) * 60;
+                streamPositions[i * 3 + 1] = Math.random() * 40 - 20;
+                streamPositions[i * 3 + 2] = (Math.random() - 0.5) * 60;
+                streamVelocities.push(0.05 + Math.random() * 0.1);
+            }
+            
+            streamGeometry.setAttribute('position', new THREE.BufferAttribute(streamPositions, 3));
+            
+            const streamMaterial = new THREE.PointsMaterial({
+                size: 0.08,
+                color: 0x3b82f6,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            const streams = new THREE.Points(streamGeometry, streamMaterial);
+            scene.add(streams);
+            
+            camera.position.z = 20;
+            
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particles.rotation.y += 0.0005;
+                particles.rotation.x += 0.0002;
+                lines.rotation.y += 0.0005;
+                lines.rotation.x += 0.0002;
+                
+                // Mouse parallax
+                camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
+                camera.position.y += (-mouseY * 3 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
+                
+                // Stream animation
+                const streamPos = streamGeometry.attributes.position.array;
+                for (let i = 0; i < streamCount; i++) {
+                    streamPos[i * 3 + 1] -= streamVelocities[i];
+                    if (streamPos[i * 3 + 1] < -20) {
+                        streamPos[i * 3 + 1] = 20;
+                    }
+                }
+                streamGeometry.attributes.position.needsUpdate = true;
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        })();
+        
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+        
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
+        
+        // 3D tilt effect for service cards
+        document.querySelectorAll('[data-tilt]').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+        
+        // Count-up animation for stats
+        const countUp = (element, target, decimal = false) => {
+            const duration = 2000;
+            const start = 0;
+            const startTime = performance.now();
+            
+            const update = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = start + (target - start) * easeOut;
+                
+                if (decimal) {
+                    element.textContent = current.toFixed(1) + '%';
+                } else {
+                    element.textContent = Math.floor(current) + '+';
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            };
+            
+            requestAnimationFrame(update);
+        };
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px'
+        };
+        
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumbers = entry.target.querySelectorAll('.stat-number');
+                    statNumbers.forEach(stat => {
+                        const target = parseFloat(stat.dataset.target);
+                        const isDecimal = stat.dataset.decimal === 'true';
+                        countUp(stat, target, isDecimal);
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        const statsSection = document.getElementById('stats');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+        
+        // Process line animation
+        const processObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const processLine = document.getElementById('processLine');
+                    if (processLine) {
+                        setTimeout(() => {
+                            processLine.classList.add('animated');
+                        }, 300);
+                    }
+                    processObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        const processSection = document.getElementById('process');
+        if (processSection) {
+            processObserver.observe(processSection);
+        }
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add scroll reveal animations
+        const revealElements = document.querySelectorAll('.service-card, .stat-card, .testimonial-card, .process-step');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            revealObserver.observe(el);
+        });
+    </script>
+</body>
+</html>
