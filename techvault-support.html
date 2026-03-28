@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support | TechVault Solutions - Enterprise IT Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Inter:wght@400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #030712;
+            --bg-card: rgba(255,255,255,0.03);
+            --card-border: rgba(99,102,241,0.2);
+            --indigo: #6366f1;
+            --electric-blue: #3b82f6;
+            --violet: #8b5cf6;
+            --off-white: #f8fafc;
+            --muted: rgba(248,250,252,0.5);
+            --glow-indigo: 0 0 30px rgba(99,102,241,0.4);
+            --glow-blue: 0 0 30px rgba(59,130,246,0.35);
+            --glow-violet: 0 0 30px rgba(139,92,246,0.4);
+            --green: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--off-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .mono {
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.6));
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--electric-blue);
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--off-white);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--indigo), var(--violet));
+            border-radius: 2px;
+        }
+
+        .nav-cta {
+            background: var(--indigo);
+            color: var(--off-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-indigo);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--off-white);
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: rgba(3, 7, 18, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 1rem 0;
+            color: var(--muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--card-border);
+            transition: color 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--off-white);
+        }
+
+        .mobile-menu .nav-cta {
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        /* Support Hero */
+        .support-hero {
+            position: relative;
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 8rem 2rem 4rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--electric-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Support Options */
+        .support-options {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .option-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, var(--card-glow), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .option-card:hover::before {
+            opacity: 0.15;
+        }
+
+        .option-card.indigo {
+            --card-glow: rgba(99, 102, 241, 0.3);
+        }
+
+        .option-card.blue {
+            --card-glow: rgba(59, 130, 246, 0.3);
+        }
+
+        .option-card.violet {
+            --card-glow: rgba(139, 92, 246, 0.3);
+        }
+
+        .option-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--card-color);
+            box-shadow: var(--card-shadow);
+        }
+
+        .option-card.indigo:hover {
+            --card-color: var(--indigo);
+            --card-shadow: var(--glow-indigo);
+        }
+
+        .option-card.blue:hover {
+            --card-color: var(--electric-blue);
+            --card-shadow: var(--glow-blue);
+        }
+
+        .option-card.violet:hover {
+            --card-color: var(--violet);
+            --card-shadow: var(--glow-violet);
+        }
+
+        .option-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .option-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .option-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .option-desc {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .option-time {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--electric-blue);
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .option-btn {
+            display: inline-block;
+            padding: 0.875rem 1.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .option-card.indigo .option-btn {
+            background: var(--indigo);
+            color: var(--off-white);
+            box-shadow: var(--glow-indigo);
+        }
+
+        .option-card.blue .option-btn {
+            background: var(--electric-blue);
+            color: var(--off-white);
+            box-shadow: var(--glow-blue);
+        }
+
+        .option-card.violet .option-btn {
+            background: var(--violet);
+            color: var(--off-white);
+            box-shadow: var(--glow-violet);
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Ticket Form */
+        .ticket-section {
+            padding: 4rem 2rem;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--indigo);
+            letter-spacing: 3px;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 3vw, 2.25rem);
+            font-weight: 700;
+        }
+
+        .ticket-form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--off-white);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--off-white);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236366f1' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        .form-select option {
+            background: var(--bg-dark);
+            color: var(--off-white);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--indigo);
+            color: var(--off-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-indigo);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(99, 102, 241, 0.6);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .success-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+        }
+
+        .success-text {
+            color: var(--green);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .success-text strong {
+            font-family: 'DM Mono', monospace;
+            color: var(--off-white);
+        }
+
+        /* System Status */
+        .status-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .status-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-card:hover {
+            border-color: var(--indigo);
+            transform: translateY(-3px);
+        }
+
+        .status-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .status-indicator.operational {
+            background: var(--green);
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+
+        .status-indicator.operational::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse 2s ease-out infinite;
+        }
+
+        .status-indicator.degraded {
+            background: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+
+        .status-indicator.degraded::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            background: #f59e0b;
+            animation: pulse 2s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(2);
+            }
+        }
+
+        .status-info h4 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .status-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+        }
+
+        .status-label.operational {
+            color: var(--green);
+        }
+
+        .status-label.degraded {
+            color: #f59e0b;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-list {
+            margin-top: 2rem;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active {
+            border-color: var(--indigo);
+        }
+
+        .faq-item.active .faq-question {
+            border-left: 4px solid var(--indigo);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 1.25rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--off-white);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .faq-question:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .faq-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer-content {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            background: var(--off-white);
+            color: var(--indigo);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(3, 7, 18, 0.95);
+            border-top: 1px solid var(--card-border);
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-logo-icon {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+        }
+
+        .footer-logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--electric-blue);
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-nav a:hover {
+            color: var(--off-white);
+        }
+
+        .footer-bottom {
+            text-align: center;
+        }
+
+        .footer-credit {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--indigo);
+        }
+
+        .footer-credit a {
+            color: var(--electric-blue);
+            text-decoration: none;
+        }
+
+        .footer-credit a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .status-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-top {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .ticket-form-card {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .option-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .option-icon {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a href="techvault-index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 2L4 10V18C4 27.9 11.1 37.1 20 40C28.9 37.1 36 27.9 36 18V10L20 2Z" stroke="url(#logoGrad)" stroke-width="2" fill="none"/>
+                    <path d="M20 8L10 13V18C10 25.2 14.2 31.8 20 34C25.8 31.8 30 25.2 30 18V13L20 8Z" fill="url(#logoGrad)" opacity="0.3"/>
+                    <path d="M16 20L19 23L25 17" stroke="#f8fafc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="logoGrad" x1="4" y1="2" x2="36" y2="40">
+                            <stop stop-color="#3b82f6"/>
+                            <stop offset="1" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">TECHVAULT</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="techvault-index.html">Home</a></li>
+                <li><a href="techvault-services.html">Services</a></li>
+                <li><a href="techvault-portfolio.html">Portfolio</a></li>
+                <li><a href="techvault-support.html" class="active">Support</a></li>
+                <li><a href="techvault-contact.html">Contact</a></li>
+            </ul>
+            <a href="techvault-contact.html" class="nav-cta">Get a Quote</a>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="techvault-index.html">Home</a>
+        <a href="techvault-services.html">Services</a>
+        <a href="techvault-portfolio.html">Portfolio</a>
+        <a href="techvault-support.html">Support</a>
+        <a href="techvault-contact.html">Contact</a>
+        <a href="techvault-contact.html" class="nav-cta">Get a Quote</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="support-hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-content">
+            <h1 class="hero-title">24/7 Support. Real Humans. Fast Resolutions.</h1>
+            <p class="hero-subtitle">Submit a ticket, check system status, or reach us directly — we're always on.</p>
+        </div>
+    </section>
+
+    <!-- Support Options -->
+    <section class="support-options">
+        <div class="options-grid">
+            <div class="option-card indigo">
+                <div class="option-icon">
+                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="15" y="20" width="50" height="45" rx="4" stroke="#6366f1" stroke-width="2" fill="rgba(99,102,241,0.1)"/>
+                        <path d="M15 30h50" stroke="#6366f1" stroke-width="2"/>
+                        <circle cx="22" cy="25" r="2" fill="#6366f1"/>
+                        <circle cx="30" cy="25" r="2" fill="#8b5cf6"/>
+                        <circle cx="38" cy="25" r="2" fill="#3b82f6"/>
+                        <line x1="25" y1="40" x2="55" y2="40" stroke="#6366f1" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="25" y1="48" x2="45" y2="48" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="25" y1="56" x2="50" y2="56" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h3 class="option-title">Raise a Ticket</h3>
+                <p class="option-desc">Submit a detailed support request and track your issue through to resolution.</p>
+                <p class="option-time">Average response: 2 hours</p>
+                <a href="#ticket-form" class="option-btn">Submit Ticket</a>
+            </div>
+            <div class="option-card blue">
+                <div class="option-icon">
+                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 10C26.2 10 15 21.2 15 35c0 8.3 4 15.7 10.2 20.3L25 68l12-7c1 .1 2 .1 3 .1 13.8 0 25-11.2 25-25S53.8 10 40 10z" stroke="#3b82f6" stroke-width="2" fill="rgba(59,130,246,0.1)"/>
+                        <circle cx="30" cy="35" r="3" fill="#3b82f6"/>
+                        <circle cx="40" cy="35" r="3" fill="#3b82f6"/>
+                        <circle cx="50" cy="35" r="3" fill="#3b82f6"/>
+                    </svg>
+                </div>
+                <h3 class="option-title">Live Chat</h3>
+                <p class="option-desc">Connect instantly with our support team for real-time assistance.</p>
+                <p class="option-time">Available 24/7</p>
+                <a href="#" class="option-btn" onclick="alert('Live chat coming soon!'); return false;">Start Chat</a>
+            </div>
+            <div class="option-card violet">
+                <div class="option-icon">
+                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M25 15c-5.5 0-10 4.5-10 10v5l-5 10h5v15c0 2.8 2.2 5 5 5h10v-5H22V35h-5l2.5-5V25c0-2.8 2.2-5 5-5h5v-5h-5z" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" stroke-width="1.5"/>
+                        <path d="M55 15c5.5 0 10 4.5 10 10v5l5 10h-5v15c0 2.8-2.2 5-5 5H45v-5h13V35h5l-2.5-5V25c0-2.8-2.2-5-5-5h-5v-5h5z" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6" stroke-width="1.5"/>
+                        <circle cx="40" cy="40" r="10" fill="rgba(139,92,246,0.3)" stroke="#8b5cf6" stroke-width="2"/>
+                        <path d="M37 40l2 2 4-4" stroke="#f8fafc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3 class="option-title">Emergency Line</h3>
+                <p class="option-desc">Critical system down? Call our emergency hotline for immediate escalation.</p>
+                <p class="option-time">Response: 15 minutes</p>
+                <a href="tel:+18005550199" class="option-btn">Call Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ticket Form -->
+    <section class="ticket-section" id="ticket-form">
+        <div class="section-header">
+            <span class="section-label">// SUPPORT REQUEST</span>
+            <h2 class="section-title">Submit a Ticket</h2>
+        </div>
+        <div class="ticket-form-card">
+            <form id="ticketForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" class="form-input" placeholder="John Smith" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="companyName">Company Name *</label>
+                        <input type="text" id="companyName" class="form-input" placeholder="Acme Corporation" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address *</label>
+                    <input type="email" id="email" class="form-input" placeholder="john@company.com" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="issueType">Issue Type *</label>
+                        <select id="issueType" class="form-select" required>
+                            <option value="">Select type...</option>
+                            <option value="infrastructure">Infrastructure</option>
+                            <option value="security">Security</option>
+                            <option value="software">Software</option>
+                            <option value="billing">Billing</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="priority">Priority *</label>
+                        <select id="priority" class="form-select" required>
+                            <option value="">Select priority...</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="systemAffected">System/Environment Affected</label>
+                    <input type="text" id="systemAffected" class="form-input" placeholder="e.g., Production API, Staging Environment">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="description">Issue Description *</label>
+                    <textarea id="description" class="form-textarea" placeholder="Please describe your issue in detail. Include any error messages, steps to reproduce, and when the issue first occurred." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">Submit Ticket</button>
+                <div class="success-message" id="successMessage">
+                    <svg class="success-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="22" stroke="#22c55e" stroke-width="2" fill="rgba(34,197,94,0.1)"/>
+                        <path d="M16 24l6 6 10-12" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <p class="success-text">
+                        Ticket submitted successfully!<br>
+                        Reference ID: <strong id="ticketId">#TVS-00000</strong><br>
+                        <span style="color: var(--muted); font-size: 0.9rem;">We will respond within your SLA window.</span>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- System Status -->
+    <section class="status-section">
+        <div class="section-header">
+            <span class="section-label">// REAL-TIME STATUS</span>
+            <h2 class="section-title">System Status</h2>
+        </div>
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-indicator operational"></div>
+                <div class="status-info">
+                    <h4>API Services</h4>
+                    <span class="status-label operational">Operational</span>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-indicator operational"></div>
+                <div class="status-info">
+                    <h4>Cloud Infrastructure</h4>
+                    <span class="status-label operational">Operational</span>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-indicator operational"></div>
+                <div class="status-info">
+                    <h4>Support Portal</h4>
+                    <span class="status-label operational">Operational</span>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-indicator degraded" id="monitoringStatus"></div>
+                <div class="status-info">
+                    <h4>Monitoring Systems</h4>
+                    <span class="status-label degraded" id="monitoringLabel">Degraded</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="section-header">
+            <span class="section-label">// KNOWLEDGE BASE</span>
+            <h2 class="section-title">Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question">
+                    What are your support hours and SLA response times?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Our support team operates 24/7/365. SLA response times vary by priority level: Critical issues receive a 15-minute initial response, High priority receives 1-hour response, Medium priority receives 4-hour response, and Low priority receives next-business-day response. Enterprise clients may have custom SLAs in their service agreements.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    How do I escalate an existing support ticket?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        To escalate an existing ticket, reply to your ticket confirmation email with "ESCALATE" in the subject line, or call our emergency line at 1-800-555-0199 and reference your ticket number. Our escalation team will review your case within 30 minutes and assign a senior engineer if warranted.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    What information should I include when submitting a ticket?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        For fastest resolution, include: the exact error message or behavior observed, steps to reproduce the issue, when the issue first occurred, any recent changes to your environment, affected systems or services, business impact level, and any troubleshooting steps already attempted. Screenshots or logs can be attached via email response.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can I request a scheduled maintenance window?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Yes, scheduled maintenance can be requested through the support portal or by submitting a ticket with "Scheduled Maintenance Request" in the subject. Please provide preferred date/time windows (include timezone), estimated duration, systems affected, and contact information for the maintenance window. We recommend 72-hour advance notice for non-emergency maintenance.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    How do I access my infrastructure monitoring dashboards?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Monitoring dashboards are accessible through our client portal at portal.techvault.io using your organization's SSO credentials. If you don't have portal access, submit a ticket requesting access and include your company domain. Dashboard access can be configured for read-only or administrative privileges based on your role.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    What is your incident response process for security issues?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Security incidents are immediately escalated to our Security Operations Center (SOC). We follow a structured response: Detection & Analysis (triage within 15 minutes), Containment (immediate threat mitigation), Eradication (root cause removal), Recovery (system restoration), and Post-Incident Review (full report within 48 hours). Security tickets are automatically flagged as Critical priority.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner">
+        <div class="cta-content">
+            <h2 class="cta-title">Still need help? We're here for you.</h2>
+            <a href="techvault-contact.html" class="cta-btn">Contact Support Team</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <svg class="footer-logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2L4 10V18C4 27.9 11.1 37.1 20 40C28.9 37.1 36 27.9 36 18V10L20 2Z" stroke="url(#footerLogoGrad)" stroke-width="2" fill="none"/>
+                        <path d="M20 8L10 13V18C10 25.2 14.2 31.8 20 34C25.8 31.8 30 25.2 30 18V13L20 8Z" fill="url(#footerLogoGrad)" opacity="0.3"/>
+                        <defs>
+                            <linearGradient id="footerLogoGrad" x1="4" y1="2" x2="36" y2="40">
+                                <stop stop-color="#3b82f6"/>
+                                <stop offset="1" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="footer-logo-text">TECHVAULT</span>
+                </div>
+                <div class="footer-nav">
+                    <a href="techvault-index.html">Home</a>
+                    <a href="techvault-services.html">Services</a>
+                    <a href="techvault-portfolio.html">Portfolio</a>
+                    <a href="techvault-support.html">Support</a>
+                    <a href="techvault-contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-credit">Demo site built by <a href="https://quantor-agency.github.io/" target="_blank">QUANTOR</a> — quantor.agency</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Three.js Hero Background
+        (function() {
+            const canvas = document.getElementById('hero-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            
+            // Particles
+            const particleCount = 180;
+            const particleGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            
+            const indigo = new THREE.Color(0x6366f1);
+            const electricBlue = new THREE.Color(0x3b82f6);
+            const violet = new THREE.Color(0x8b5cf6);
+            
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+                
+                const color = [indigo, electricBlue, violet][Math.floor(Math.random() * 3)];
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.12,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.7,
+                sizeAttenuation: true
+            });
+            
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+            
+            // Connection lines
+            const lineGeometry = new THREE.BufferGeometry();
+            const linePositions = [];
+            const lineColors = [];
+            const connectionDistance = 10;
+            
+            for (let i = 0; i < particleCount; i++) {
+                for (let j = i + 1; j < particleCount; j++) {
+                    const dx = positions[i * 3] - positions[j * 3];
+                    const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
+                    const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
+                    const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    
+                    if (dist < connectionDistance) {
+                        linePositions.push(
+                            positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
+                            positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2]
+                        );
+                        const opacity = 1 - dist / connectionDistance;
+                        lineColors.push(
+                            colors[i * 3] * opacity, colors[i * 3 + 1] * opacity, colors[i * 3 + 2] * opacity,
+                            colors[j * 3] * opacity, colors[j * 3 + 1] * opacity, colors[j * 3 + 2] * opacity
+                        );
+                    }
+                }
+            }
+            
+            lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            lineGeometry.setAttribute('color', new THREE.Float32BufferAttribute(lineColors, 3));
+            
+            const lineMaterial = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.25
+            });
+            
+            const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(lines);
+            
+            camera.position.z = 20;
+            
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particles.rotation.y += 0.0003;
+                particles.rotation.x += 0.0001;
+                lines.rotation.y += 0.0003;
+                lines.rotation.x += 0.0001;
+                
+                // Mouse parallax
+                camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+                camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        })();
+        
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+        
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
+        
+        // Ticket Form Submission
+        const ticketForm = document.getElementById('ticketForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const ticketIdElement = document.getElementById('ticketId');
+        
+        ticketForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Generate random 5-digit ticket ID
+            const ticketNumber = Math.floor(10000 + Math.random() * 90000);
+            ticketIdElement.textContent = '#TVS-' + ticketNumber;
+            
+            // Disable button and show success
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            setTimeout(() => {
+                successMessage.classList.add('show');
+                submitBtn.textContent = 'Ticket Submitted';
+                
+                // Reset form after delay
+                setTimeout(() => {
+                    ticketForm.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Ticket';
+                }, 5000);
+            }, 800);
+        });
+        
+        // FAQ Accordion
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            const answer = item.querySelector('.faq-answer');
+            const content = item.querySelector('.faq-answer-content');
+            
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                        otherItem.querySelector('.faq-answer').style.maxHeight = '0';
+                    }
+                });
+                
+                // Toggle current item
+                if (isActive) {
+                    item.classList.remove('active');
+                    answer.style.maxHeight = '0';
+                } else {
+                    item.classList.add('active');
+                    answer.style.maxHeight = content.scrollHeight + 'px';
+                }
+            });
+        });
+        
+        // Simulated status change (for demo purposes)
+        // Uncomment to see degraded status behavior
+        /*
+        setTimeout(() => {
+            const monitoringStatus = document.getElementById('monitoringStatus');
+            const monitoringLabel = document.getElementById('monitoringLabel');
+            monitoringStatus.classList.remove('degraded');
+            monitoringStatus.classList.add('operational');
+            monitoringLabel.classList.remove('degraded');
+            monitoringLabel.classList.add('operational');
+            monitoringLabel.textContent = 'Operational';
+        }, 10000);
+        */
+    </script>
+</body>
+</html>
