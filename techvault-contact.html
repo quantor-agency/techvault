@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | TechVault Solutions - Enterprise IT Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Inter:wght@400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #030712;
+            --bg-card: rgba(255,255,255,0.03);
+            --card-border: rgba(99,102,241,0.2);
+            --indigo: #6366f1;
+            --electric-blue: #3b82f6;
+            --violet: #8b5cf6;
+            --off-white: #f8fafc;
+            --muted: rgba(248,250,252,0.5);
+            --glow-indigo: 0 0 30px rgba(99,102,241,0.4);
+            --glow-blue: 0 0 30px rgba(59,130,246,0.35);
+            --glow-violet: 0 0 30px rgba(139,92,246,0.4);
+            --green: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--off-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .mono {
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.6));
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--electric-blue);
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--off-white);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--indigo), var(--violet));
+            border-radius: 2px;
+        }
+
+        .nav-cta {
+            background: var(--indigo);
+            color: var(--off-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-indigo);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--off-white);
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: rgba(3, 7, 18, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 1rem 0;
+            color: var(--muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--card-border);
+            transition: color 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--off-white);
+        }
+
+        .mobile-menu .nav-cta {
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        /* Contact Hero */
+        .contact-hero {
+            position: relative;
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 8rem 2rem 4rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--electric-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Contact Options */
+        .contact-options {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .option-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--indigo), var(--violet));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .option-card:hover::before {
+            opacity: 1;
+        }
+
+        .option-card.indigo:hover {
+            border-color: var(--indigo);
+            box-shadow: var(--glow-indigo);
+            transform: translateY(-5px);
+        }
+
+        .option-card.violet:hover {
+            border-color: var(--violet);
+            box-shadow: var(--glow-violet);
+            transform: translateY(-5px);
+        }
+
+        .option-icon {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 1.25rem;
+        }
+
+        .option-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .option-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .option-detail svg {
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
+        .option-detail a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .option-detail a:hover {
+            color: var(--electric-blue);
+        }
+
+        .option-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .option-card.indigo .option-btn {
+            background: var(--indigo);
+            color: var(--off-white);
+            box-shadow: var(--glow-indigo);
+        }
+
+        .option-card.violet .option-btn {
+            background: var(--violet);
+            color: var(--off-white);
+            box-shadow: var(--glow-violet);
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .option-btn svg {
+            transition: transform 0.3s ease;
+        }
+
+        .option-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* Contact Form */
+        .form-section {
+            padding: 4rem 2rem;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--indigo);
+            letter-spacing: 3px;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 3vw, 2.25rem);
+            font-weight: 700;
+        }
+
+        .contact-form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--off-white);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--off-white);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236366f1' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        .form-select option {
+            background: var(--bg-dark);
+            color: var(--off-white);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-item input {
+            display: none;
+        }
+
+        .checkbox-box {
+            width: 18px;
+            height: 18px;
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .checkbox-item input:checked + .checkbox-box {
+            background: var(--indigo);
+            border-color: var(--indigo);
+        }
+
+        .checkbox-box svg {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .checkbox-item input:checked + .checkbox-box svg {
+            opacity: 1;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: var(--muted);
+            transition: color 0.3s ease;
+        }
+
+        .checkbox-item:hover .checkbox-label {
+            color: var(--off-white);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--indigo);
+            color: var(--off-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-indigo);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(99, 102, 241, 0.6);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .success-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+        }
+
+        .success-text {
+            color: var(--green);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Office Locations */
+        .locations-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .location-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .location-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(180deg, var(--indigo), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .location-card:hover::before {
+            opacity: 1;
+        }
+
+        .location-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow-indigo);
+        }
+
+        .location-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 1.25rem;
+        }
+
+        .location-city {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .location-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .location-detail svg {
+            flex-shrink: 0;
+            margin-top: 0.2rem;
+            opacity: 0.7;
+        }
+
+        .location-detail a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .location-detail a:hover {
+            color: var(--electric-blue);
+        }
+
+        .location-timezone {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--indigo);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--card-border);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(3, 7, 18, 0.95);
+            border-top: 1px solid var(--card-border);
+            padding: 4rem 2rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-logo-icon {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+        }
+
+        .footer-logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--electric-blue);
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-nav a:hover {
+            color: var(--off-white);
+        }
+
+        .footer-bottom {
+            text-align: center;
+        }
+
+        .footer-credit {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--indigo);
+        }
+
+        .footer-credit a {
+            color: var(--electric-blue);
+            text-decoration: none;
+        }
+
+        .footer-credit a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .locations-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 2.5rem auto 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-top {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .contact-form-card {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .option-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .location-card {
+                padding: 1.5rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a href="techvault-index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 2L4 10V18C4 27.9 11.1 37.1 20 40C28.9 37.1 36 27.9 36 18V10L20 2Z" stroke="url(#logoGrad)" stroke-width="2" fill="none"/>
+                    <path d="M20 8L10 13V18C10 25.2 14.2 31.8 20 34C25.8 31.8 30 25.2 30 18V13L20 8Z" fill="url(#logoGrad)" opacity="0.3"/>
+                    <path d="M16 20L19 23L25 17" stroke="#f8fafc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="logoGrad" x1="4" y1="2" x2="36" y2="40">
+                            <stop stop-color="#3b82f6"/>
+                            <stop offset="1" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">TECHVAULT</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="techvault-index.html">Home</a></li>
+                <li><a href="techvault-services.html">Services</a></li>
+                <li><a href="techvault-portfolio.html">Portfolio</a></li>
+                <li><a href="techvault-support.html">Support</a></li>
+                <li><a href="techvault-contact.html" class="active">Contact</a></li>
+            </ul>
+            <a href="techvault-contact.html" class="nav-cta">Get a Quote</a>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="techvault-index.html">Home</a>
+        <a href="techvault-services.html">Services</a>
+        <a href="techvault-portfolio.html">Portfolio</a>
+        <a href="techvault-support.html">Support</a>
+        <a href="techvault-contact.html">Contact</a>
+        <a href="techvault-contact.html" class="nav-cta">Get a Quote</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="contact-hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-content">
+            <h1 class="hero-title">Let's Build Something That Lasts</h1>
+            <p class="hero-subtitle">Tell us about your IT challenge and we'll bring the solution.</p>
+        </div>
+    </section>
+
+    <!-- Contact Options -->
+    <section class="contact-options">
+        <div class="options-grid">
+            <div class="option-card indigo">
+                <div class="option-icon">
+                    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="28" cy="28" r="24" stroke="#6366f1" stroke-width="2" fill="rgba(99,102,241,0.1)"/>
+                        <path d="M18 22c0-2.2 1.8-4 4-4h12c2.2 0 4 1.8 4 4v12c0 2.2-1.8 4-4 4H22c-2.2 0-4-1.8-4-4V22z" stroke="#6366f1" stroke-width="1.5" fill="rgba(99,102,241,0.15)"/>
+                        <path d="M18 22l10 7 10-7" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h3 class="option-title">Sales Enquiry</h3>
+                <div class="option-detail">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    <a href="mailto:sales@techvault.io">sales@techvault.io</a>
+                </div>
+                <div class="option-detail">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    <a href="tel:+91225550199">+91 22 5550 199</a>
+                </div>
+                <a href="#contact-form" class="option-btn">
+                    Talk to Sales
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="option-card violet">
+                <div class="option-icon">
+                    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="28" cy="28" r="24" stroke="#8b5cf6" stroke-width="2" fill="rgba(139,92,246,0.1)"/>
+                        <path d="M20 18h16c2.2 0 4 1.8 4 4v12c0 2.2-1.8 4-4 4H20c-2.2 0-4-1.8-4-4V22c0-2.2 1.8-4 4-4z" stroke="#8b5cf6" stroke-width="1.5" fill="rgba(139,92,246,0.15)"/>
+                        <line x1="16" y1="26" x2="40" y2="26" stroke="#8b5cf6" stroke-width="1.5"/>
+                        <circle cx="20" cy="22" r="1.5" fill="#8b5cf6"/>
+                        <circle cx="24" cy="22" r="1.5" fill="#8b5cf6"/>
+                    </svg>
+                </div>
+                <h3 class="option-title">Technical Support</h3>
+                <div class="option-detail">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 16v-4M12 8h.01"/>
+                    </svg>
+                    <span>Existing client? Raise a ticket</span>
+                </div>
+                <div class="option-detail">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span>24/7 Support Portal</span>
+                </div>
+                <a href="techvault-support.html" class="option-btn">
+                    Raise a Ticket
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="form-section" id="contact-form">
+        <div class="section-header">
+            <span class="section-label">// GET IN TOUCH</span>
+            <h2 class="section-title">Send Us an Enquiry</h2>
+        </div>
+        <div class="contact-form-card">
+            <form id="contactForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" class="form-input" placeholder="John Smith" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="companyName">Company Name *</label>
+                        <input type="text" id="companyName" class="form-input" placeholder="Acme Corporation" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address *</label>
+                        <input type="email" id="email" class="form-input" placeholder="john@company.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Phone Number</label>
+                        <input type="tel" id="phone" class="form-input" placeholder="+91 98765 43210">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="companySize">Company Size *</label>
+                        <select id="companySize" class="form-select" required>
+                            <option value="">Select size...</option>
+                            <option value="1-10">1–10 employees</option>
+                            <option value="11-50">11–50 employees</option>
+                            <option value="51-200">51–200 employees</option>
+                            <option value="200+">200+ employees</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="serviceInterest">Service Interest *</label>
+                        <select id="serviceInterest" class="form-select" required>
+                            <option value="">Select service...</option>
+                            <option value="cloud">Cloud Infrastructure</option>
+                            <option value="security">Cybersecurity</option>
+                            <option value="software">Software Development</option>
+                            <option value="consulting">IT Consulting</option>
+                            <option value="analytics">Data Analytics</option>
+                            <option value="ai">AI Integration</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Additional Services (Optional)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="services" value="cloud">
+                            <span class="checkbox-box">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#f8fafc" stroke-width="2">
+                                    <path d="M2 6l3 3 5-5"/>
+                                </svg>
+                            </span>
+                            <span class="checkbox-label">Cloud Infrastructure</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="services" value="security">
+                            <span class="checkbox-box">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#f8fafc" stroke-width="2">
+                                    <path d="M2 6l3 3 5-5"/>
+                                </svg>
+                            </span>
+                            <span class="checkbox-label">Cybersecurity</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="services" value="software">
+                            <span class="checkbox-box">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#f8fafc" stroke-width="2">
+                                    <path d="M2 6l3 3 5-5"/>
+                                </svg>
+                            </span>
+                            <span class="checkbox-label">Software Development</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="services" value="consulting">
+                            <span class="checkbox-box">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#f8fafc" stroke-width="2">
+                                    <path d="M2 6l3 3 5-5"/>
+                                </svg>
+                            </span>
+                            <span class="checkbox-label">IT Consulting</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="services" value="analytics">
+                            <span class="checkbox-box">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#f8fafc" stroke-width="2">
+                                    <path d="M2 6l3 3 5-5"/>
+                                </svg>
+                            </span>
+                            <span class="checkbox-label">Data Analytics</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="services" value="ai">
+                            <span class="checkbox-box">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#f8fafc" stroke-width="2">
+                                    <path d="M2 6l3 3 5-5"/>
+                                </svg>
+                            </span>
+                            <span class="checkbox-label">AI Integration</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="projectDescription">Project Description *</label>
+                    <textarea id="projectDescription" class="form-textarea" placeholder="Tell us about your project, goals, timeline, and any specific requirements or challenges you're facing." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">Send Enquiry</button>
+                <div class="success-message" id="successMessage">
+                    <svg class="success-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="22" stroke="#22c55e" stroke-width="2" fill="rgba(34,197,94,0.1)"/>
+                        <path d="M16 24l6 6 10-12" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <p class="success-text">
+                        Thanks for reaching out!<br>
+                        <span style="color: var(--muted); font-size: 0.9rem;">A solutions architect will contact you within 24 hours.</span>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Office Locations -->
+    <section class="locations-section">
+        <div class="section-header">
+            <span class="section-label">// GLOBAL PRESENCE</span>
+            <h2 class="section-title">Our Offices</h2>
+        </div>
+        <div class="locations-grid">
+            <div class="location-card">
+                <div class="location-icon">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" stroke="#6366f1" stroke-width="2" fill="rgba(99,102,241,0.1)"/>
+                        <path d="M20 8c-4.4 0-8 3.6-8 8 0 6 8 16 8 16s8-10 8-16c0-4.4-3.6-8-8-8z" stroke="#6366f1" stroke-width="1.5" fill="rgba(99,102,241,0.2)"/>
+                        <circle cx="20" cy="16" r="3" fill="#6366f1"/>
+                    </svg>
+                </div>
+                <h3 class="location-city">Mumbai</h3>
+                <div class="location-detail">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <span>TechHub Tower, Level 15<br>Bandra Kurla Complex<br>Mumbai 400051, India</span>
+                </div>
+                <div class="location-detail">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    <a href="tel:+91225550199">+91 22 5550 199</a>
+                </div>
+                <p class="location-timezone">IST (UTC+5:30)</p>
+            </div>
+            <div class="location-card">
+                <div class="location-icon">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" stroke="#8b5cf6" stroke-width="2" fill="rgba(139,92,246,0.1)"/>
+                        <path d="M20 8c-4.4 0-8 3.6-8 8 0 6 8 16 8 16s8-10 8-16c0-4.4-3.6-8-8-8z" stroke="#8b5cf6" stroke-width="1.5" fill="rgba(139,92,246,0.2)"/>
+                        <circle cx="20" cy="16" r="3" fill="#8b5cf6"/>
+                    </svg>
+                </div>
+                <h3 class="location-city">Bangalore</h3>
+                <div class="location-detail">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <span>Innovation Campus, Block A<br>Outer Ring Road, Bellandur<br>Bangalore 560103, India</span>
+                </div>
+                <div class="location-detail">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    <a href="tel:+91805550199">+91 80 5550 199</a>
+                </div>
+                <p class="location-timezone">IST (UTC+5:30)</p>
+            </div>
+            <div class="location-card">
+                <div class="location-icon">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" stroke="#3b82f6" stroke-width="2" fill="rgba(59,130,246,0.1)"/>
+                        <path d="M20 8c-4.4 0-8 3.6-8 8 0 6 8 16 8 16s8-10 8-16c0-4.4-3.6-8-8-8z" stroke="#3b82f6" stroke-width="1.5" fill="rgba(59,130,246,0.2)"/>
+                        <circle cx="20" cy="16" r="3" fill="#3b82f6"/>
+                    </svg>
+                </div>
+                <h3 class="location-city">Dubai</h3>
+                <div class="location-detail">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <span>Digital Park, Building A3<br>Dubai Silicon Oasis<br>Dubai, UAE</span>
+                </div>
+                <div class="location-detail">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    <a href="tel:+97145550199">+971 4 555 0199</a>
+                </div>
+                <p class="location-timezone">GST (UTC+4)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <svg class="footer-logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2L4 10V18(4 27.9 11.1 37.1 20 40C28.9 37.1 36 27.9 36 18V10L20 2Z" stroke="url(#footerLogoGrad)" stroke-width="2" fill="none"/>
+                        <path d="M20 8L10 13V18C10 25.2 14.2 31.8 20 34C25.8 31.8 30 25.2 30 18V13L20 8Z" fill="url(#footerLogoGrad)" opacity="0.3"/>
+                        <defs>
+                            <linearGradient id="footerLogoGrad" x1="4" y1="2" x2="36" y2="40">
+                                <stop stop-color="#3b82f6"/>
+                                <stop offset="1" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="footer-logo-text">TECHVAULT</span>
+                </div>
+                <div class="footer-nav">
+                    <a href="techvault-index.html">Home</a>
+                    <a href="techvault-services.html">Services</a>
+                    <a href="techvault-portfolio.html">Portfolio</a>
+                    <a href="techvault-support.html">Support</a>
+                    <a href="techvault-contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-credit">Demo site built by <a href="https://quantor-agency.github.io/" target="_blank">QUANTOR</a> — quantor.agency</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Three.js Hero Background
+        (function() {
+            const canvas = document.getElementById('hero-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            
+            // Particles
+            const particleCount = 180;
+            const particleGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            
+            const indigo = new THREE.Color(0x6366f1);
+            const electricBlue = new THREE.Color(0x3b82f6);
+            const violet = new THREE.Color(0x8b5cf6);
+            
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+                
+                const color = [indigo, electricBlue, violet][Math.floor(Math.random() * 3)];
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.12,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.7,
+                sizeAttenuation: true
+            });
+            
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+            
+            // Connection lines
+            const lineGeometry = new THREE.BufferGeometry();
+            const linePositions = [];
+            const lineColors = [];
+            const connectionDistance = 10;
+            
+            for (let i = 0; i < particleCount; i++) {
+                for (let j = i + 1; j < particleCount; j++) {
+                    const dx = positions[i * 3] - positions[j * 3];
+                    const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
+                    const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
+                    const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    
+                    if (dist < connectionDistance) {
+                        linePositions.push(
+                            positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
+                            positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2]
+                        );
+                        const opacity = 1 - dist / connectionDistance;
+                        lineColors.push(
+                            colors[i * 3] * opacity, colors[i * 3 + 1] * opacity, colors[i * 3 + 2] * opacity,
+                            colors[j * 3] * opacity, colors[j * 3 + 1] * opacity, colors[j * 3 + 2] * opacity
+                        );
+                    }
+                }
+            }
+            
+            lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            lineGeometry.setAttribute('color', new THREE.Float32BufferAttribute(lineColors, 3));
+            
+            const lineMaterial = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.25
+            });
+            
+            const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(lines);
+            
+            camera.position.z = 20;
+            
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particles.rotation.y += 0.0003;
+                particles.rotation.x += 0.0001;
+                lines.rotation.y += 0.0003;
+                lines.rotation.x += 0.0001;
+                
+                // Mouse parallax
+                camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+                camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        })();
+        
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+        
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
+        
+        // Contact Form Submission
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            
+            // Simulate form submission
+            setTimeout(() => {
+                successMessage.classList.add('show');
+                submitBtn.textContent = 'Enquiry Sent';
+                
+                // Reset form after delay
+                setTimeout(() => {
+                    contactForm.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Enquiry';
+                    successMessage.classList.remove('show');
+                }, 5000);
+            }, 1000);
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
