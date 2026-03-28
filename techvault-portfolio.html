@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | TechVault Solutions - Enterprise IT Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Inter:wght@400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #030712;
+            --bg-card: rgba(255,255,255,0.03);
+            --card-border: rgba(99,102,241,0.2);
+            --indigo: #6366f1;
+            --electric-blue: #3b82f6;
+            --violet: #8b5cf6;
+            --off-white: #f8fafc;
+            --muted: rgba(248,250,252,0.5);
+            --glow-indigo: 0 0 30px rgba(99,102,241,0.4);
+            --glow-blue: 0 0 30px rgba(59,130,246,0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--off-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .mono {
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.6));
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--electric-blue);
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--off-white);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--indigo), var(--violet));
+            border-radius: 2px;
+        }
+
+        .nav-cta {
+            background: var(--indigo);
+            color: var(--off-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-indigo);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--off-white);
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: rgba(3, 7, 18, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 1rem 0;
+            color: var(--muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--card-border);
+            transition: color 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--off-white);
+        }
+
+        .mobile-menu .nav-cta {
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        /* Portfolio Hero */
+        .portfolio-hero {
+            position: relative;
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 8rem 2rem 4rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--electric-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Filter Tabs */
+        .filter-section {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab:hover {
+            color: var(--off-white);
+            border-color: var(--indigo);
+        }
+
+        .filter-tab.active {
+            background: var(--indigo);
+            color: var(--off-white);
+            border-color: var(--indigo);
+            box-shadow: var(--glow-indigo);
+        }
+
+        /* Projects Grid */
+        .projects-section {
+            padding: 2rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.75rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--indigo), var(--violet));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            border-color: var(--indigo);
+            box-shadow: var(--glow-indigo);
+            transform: translateY(-8px);
+        }
+
+        .project-code {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--indigo);
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .project-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .project-industry {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--violet);
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .project-description {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+        }
+
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .tech-pill {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.35rem 0.75rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            color: var(--electric-blue);
+        }
+
+        .project-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--electric-blue);
+            color: var(--electric-blue);
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .project-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            box-shadow: var(--glow-blue);
+        }
+
+        .project-btn svg {
+            transition: transform 0.3s ease;
+        }
+
+        .project-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        .project-card.hidden {
+            display: none;
+        }
+
+        /* Results Strip */
+        .results-strip {
+            background: linear-gradient(180deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+            padding: 5rem 2rem;
+            border-top: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .results-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .results-title {
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-subtitle {
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .result-card {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            border-color: var(--indigo);
+            box-shadow: var(--glow-indigo);
+            transform: translateY(-5px);
+        }
+
+        .result-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-label {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            background: var(--off-white);
+            color: var(--indigo);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(3, 7, 18, 0.95);
+            border-top: 1px solid var(--card-border);
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-logo-icon {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+        }
+
+        .footer-logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--electric-blue);
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-nav a:hover {
+            color: var(--off-white);
+        }
+
+        .footer-bottom {
+            text-align: center;
+        }
+
+        .footer-credit {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--indigo);
+        }
+
+        .footer-credit a {
+            color: var(--electric-blue);
+            text-decoration: none;
+        }
+
+        .footer-credit a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .footer-top {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .filter-tabs {
+                gap: 0.75rem;
+            }
+
+            .filter-tab {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .result-number {
+                font-size: 2.5rem;
+            }
+
+            .project-card {
+                padding: 1.25rem;
+            }
+
+            .project-title {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a href="techvault-index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 2L4 10V18C4 27.9 11.1 37.1 20 40C28.9 37.1 36 27.9 36 18V10L20 2Z" stroke="url(#logoGrad)" stroke-width="2" fill="none"/>
+                    <path d="M20 8L10 13V18C10 25.2 14.2 31.8 20 34C25.8 31.8 30 25.2 30 18V13L20 8Z" fill="url(#logoGrad)" opacity="0.3"/>
+                    <path d="M16 20L19 23L25 17" stroke="#f8fafc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="logoGrad" x1="4" y1="2" x2="36" y2="40">
+                            <stop stop-color="#3b82f6"/>
+                            <stop offset="1" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">TECHVAULT</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="techvault-index.html">Home</a></li>
+                <li><a href="techvault-services.html">Services</a></li>
+                <li><a href="techvault-portfolio.html" class="active">Portfolio</a></li>
+                <li><a href="techvault-support.html">Support</a></li>
+                <li><a href="techvault-contact.html">Contact</a></li>
+            </ul>
+            <a href="techvault-contact.html" class="nav-cta">Get a Quote</a>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="techvault-index.html">Home</a>
+        <a href="techvault-services.html">Services</a>
+        <a href="techvault-portfolio.html">Portfolio</a>
+        <a href="techvault-support.html">Support</a>
+        <a href="techvault-contact.html">Contact</a>
+        <a href="techvault-contact.html" class="nav-cta">Get a Quote</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="portfolio-hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-content">
+            <h1 class="hero-title">Projects That Prove What We're Capable Of</h1>
+            <p class="hero-subtitle">A selection of enterprise solutions we've delivered across industries.</p>
+        </div>
+    </section>
+
+    <!-- Filter Tabs -->
+    <section class="filter-section">
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="cloud">Cloud</button>
+            <button class="filter-tab" data-filter="security">Security</button>
+            <button class="filter-tab" data-filter="software">Software</button>
+            <button class="filter-tab" data-filter="ai-data">AI & Data</button>
+        </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <section class="projects-section">
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Project 1 -->
+            <div class="project-card" data-category="cloud">
+                <span class="project-code">PRJ-2024-042</span>
+                <h3 class="project-title">Multi-Cloud Infrastructure Migration</h3>
+                <span class="project-industry">Financial Services</span>
+                <p class="project-description">Migrated legacy on-premise infrastructure to a hybrid multi-cloud architecture, enabling scalability and reducing operational costs significantly.</p>
+                <div class="tech-pills">
+                    <span class="tech-pill">AWS</span>
+                    <span class="tech-pill">Azure</span>
+                    <span class="tech-pill">Terraform</span>
+                    <span class="tech-pill">Kubernetes</span>
+                </div>
+                <a href="techvault-contact.html" class="project-btn">
+                    View Details
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-card" data-category="security">
+                <span class="project-code">PRJ-2024-038</span>
+                <h3 class="project-title">Zero Trust Security Implementation</h3>
+                <span class="project-industry">Healthcare</span>
+                <p class="project-description">Implemented comprehensive zero trust architecture for a healthcare network, achieving HIPAA compliance and eliminating data breach incidents.</p>
+                <div class="tech-pills">
+                    <span class="tech-pill">Okta</span>
+                    <span class="tech-pill">CrowdStrike</span>
+                    <span class="tech-pill">Zscaler</span>
+                    <span class="tech-pill">HashiCorp Vault</span>
+                </div>
+                <a href="techvault-contact.html" class="project-btn">
+                    View Details
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-card" data-category="software">
+                <span class="project-code">PRJ-2024-035</span>
+                <h3 class="project-title">Enterprise Resource Planning Platform</h3>
+                <span class="project-industry">Manufacturing</span>
+                <p class="project-description">Built a custom ERP solution integrating supply chain, inventory, and production management, reducing manual processes by 70%.</p>
+                <div class="tech-pills">
+                    <span class="tech-pill">React</span>
+                    <span class="tech-pill">Node.js</span>
+                    <span class="tech-pill">PostgreSQL</span>
+                    <span class="tech-pill">Docker</span>
+                </div>
+                <a href="techvault-contact.html" class="project-btn">
+                    View Details
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Project 4 -->
+            <div class="project-card" data-category="ai-data">
+                <span class="project-code">PRJ-2024-031</span>
+                <h3 class="project-title">Predictive Maintenance System</h3>
+                <span class="project-industry">Energy & Utilities</span>
+                <p class="project-description">Developed an AI-powered predictive maintenance platform that reduced equipment downtime by 45% and maintenance costs by $2M annually.</p>
+                <div class="tech-pills">
+                    <span class="tech-pill">TensorFlow</span>
+                    <span class="tech-pill">Python</span>
+                    <span class="tech-pill">Apache Kafka</span>
+                    <span class="tech-pill">Databricks</span>
+                </div>
+                <a href="techvault-contact.html" class="project-btn">
+                    View Details
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Project 5 -->
+            <div class="project-card" data-category="security">
+                <span class="project-code">PRJ-2024-027</span>
+                <h3 class="project-title">SOC 2 Compliance & Security Operations</h3>
+                <span class="project-industry">SaaS Technology</span>
+                <p class="project-description">Established 24/7 security operations center and achieved SOC 2 Type II certification, enabling enterprise sales pipeline expansion.</p>
+                <div class="tech-pills">
+                    <span class="tech-pill">Splunk</span>
+                    <span class="tech-pill">Sumo Logic</span>
+                    <span class="tech-pill">AWS Security Hub</span>
+                    <span class="tech-pill">Drata</span>
+                </div>
+                <a href="techvault-contact.html" class="project-btn">
+                    View Details
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Project 6 -->
+            <div class="project-card" data-category="ai-data">
+                <span class="project-code">PRJ-2024-024</span>
+                <h3 class="project-title">Customer Intelligence Platform</h3>
+                <span class="project-industry">Retail & E-commerce</span>
+                <p class="project-description">Built a real-time customer analytics platform processing 10M+ events daily, enabling personalized experiences and 35% conversion increase.</p>
+                <div class="tech-pills">
+                    <span class="tech-pill">Snowflake</span>
+                    <span class="tech-pill">dbt</span>
+                    <span class="tech-pill">Apache Flink</span>
+                    <span class="tech-pill">Tableau</span>
+                </div>
+                <a href="techvault-contact.html" class="project-btn">
+                    View Details
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Strip -->
+    <section class="results-strip" id="results">
+        <div class="results-container">
+            <div class="results-header">
+                <h2 class="results-title">Measurable Impact</h2>
+                <p class="results-subtitle">The numbers behind our success stories</p>
+            </div>
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-number" data-target="500">0</div>
+                    <div class="result-label">Projects Delivered</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-number" data-target="50" data-prefix="$" data-suffix="M+">$0</div>
+                    <div class="result-label">Client Revenue Impacted</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-number" data-target="40" data-suffix="%">0%</div>
+                    <div class="result-label">Average Cost Reduction</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-number" data-target="99.9" data-decimal="true" data-suffix="%">0%</div>
+                    <div class="result-label">Delivery Success Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to become our next success story?</h2>
+            <a href="techvault-contact.html" class="cta-btn">Start Your Project</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <svg class="footer-logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2L4 10V18C4 27.9 11.1 37.1 20 40C28.9 37.1 36 27.9 36 18V10L20 2Z" stroke="url(#footerLogoGrad)" stroke-width="2" fill="none"/>
+                        <path d="M20 8L10 13V18C10 25.2 14.2 31.8 20 34C25.8 31.8 30 25.2 30 18V13L20 8Z" fill="url(#footerLogoGrad)" opacity="0.3"/>
+                        <defs>
+                            <linearGradient id="footerLogoGrad" x1="4" y1="2" x2="36" y2="40">
+                                <stop stop-color="#3b82f6"/>
+                                <stop offset="1" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="footer-logo-text">TECHVAULT</span>
+                </div>
+                <div class="footer-nav">
+                    <a href="techvault-index.html">Home</a>
+                    <a href="techvault-services.html">Services</a>
+                    <a href="techvault-portfolio.html">Portfolio</a>
+                    <a href="techvault-support.html">Support</a>
+                    <a href="techvault-contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-credit">Demo site built by <a href="https://quantor-agency.github.io/" target="_blank">QUANTOR</a> — quantor.agency</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Three.js Hero Background
+        (function() {
+            const canvas = document.getElementById('hero-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            
+            // Particles
+            const particleCount = 200;
+            const particleGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            
+            const indigo = new THREE.Color(0x6366f1);
+            const electricBlue = new THREE.Color(0x3b82f6);
+            const violet = new THREE.Color(0x8b5cf6);
+            
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+                
+                const color = [indigo, electricBlue, violet][Math.floor(Math.random() * 3)];
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.12,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.7,
+                sizeAttenuation: true
+            });
+            
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+            
+            // Connection lines
+            const lineGeometry = new THREE.BufferGeometry();
+            const linePositions = [];
+            const lineColors = [];
+            const connectionDistance = 10;
+            
+            for (let i = 0; i < particleCount; i++) {
+                for (let j = i + 1; j < particleCount; j++) {
+                    const dx = positions[i * 3] - positions[j * 3];
+                    const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
+                    const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
+                    const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    
+                    if (dist < connectionDistance) {
+                        linePositions.push(
+                            positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
+                            positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2]
+                        );
+                        const opacity = 1 - dist / connectionDistance;
+                        lineColors.push(
+                            colors[i * 3] * opacity, colors[i * 3 + 1] * opacity, colors[i * 3 + 2] * opacity,
+                            colors[j * 3] * opacity, colors[j * 3 + 1] * opacity, colors[j * 3 + 2] * opacity
+                        );
+                    }
+                }
+            }
+            
+            lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            lineGeometry.setAttribute('color', new THREE.Float32BufferAttribute(lineColors, 3));
+            
+            const lineMaterial = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.25
+            });
+            
+            const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(lines);
+            
+            camera.position.z = 20;
+            
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particles.rotation.y += 0.0003;
+                particles.rotation.x += 0.0001;
+                lines.rotation.y += 0.0003;
+                lines.rotation.x += 0.0001;
+                
+                // Mouse parallax
+                camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+                camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        })();
+        
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+        
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
+        
+        // Filter functionality
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        const projectCards = document.querySelectorAll('.project-card');
+        
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active state
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const filter = tab.dataset.filter;
+                
+                // Filter projects
+                projectCards.forEach(card => {
+                    const category = card.dataset.category;
+                    
+                    if (filter === 'all' || category === filter) {
+                        card.classList.remove('hidden');
+                        card.classList.add('fade-in');
+                    } else {
+                        card.classList.add('hidden');
+                        card.classList.remove('fade-in');
+                    }
+                });
+            });
+        });
+        
+        // Count-up animation for results
+        const countUp = (element, target, options = {}) => {
+            const { prefix = '', suffix = '', decimal = false } = options;
+            const duration = 2000;
+            const start = 0;
+            const startTime = performance.now();
+            
+            const update = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = start + (target - start) * easeOut;
+                
+                if (decimal) {
+                    element.textContent = prefix + current.toFixed(1) + suffix;
+                } else {
+                    element.textContent = prefix + Math.floor(current) + suffix;
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            };
+            
+            requestAnimationFrame(update);
+        };
+        
+        // Intersection Observer for results animation
+        const resultsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const resultNumbers = entry.target.querySelectorAll('.result-number');
+                    resultNumbers.forEach(stat => {
+                        const target = parseFloat(stat.dataset.target);
+                        const prefix = stat.dataset.prefix || '';
+                        const suffix = stat.dataset.suffix || '';
+                        const isDecimal = stat.dataset.decimal === 'true';
+                        countUp(stat, target, { prefix, suffix, decimal: isDecimal });
+                    });
+                    resultsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        
+        const resultsSection = document.getElementById('results');
+        if (resultsSection) {
+            resultsObserver.observe(resultsSection);
+        }
+        
+        // Scroll reveal for project cards
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        projectCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            cardObserver.observe(card);
+        });
+    </script>
+</body>
+</html>
